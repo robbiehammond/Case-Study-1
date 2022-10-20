@@ -20,12 +20,14 @@ def aucCV(features,labels, model):
     scores = cross_val_score(model,features,labels,cv=10,scoring='roc_auc')  
     return scores
 
-def predictTest(trainFeatures,trainLabels,testFeatures, model):
-    model.fit(trainFeatures,trainLabels)
+def predictTest(trainFeatures,trainLabels,testFeatures):
+    xgb_model = xgb.XGBClassifier(objective='binary:logistic', n_jobs=multiprocessing.cpu_count() // 2)
+    clf = xgb.XGBClassifier(max_depth=4, eta=0.1, max_bin=256, n_estimators=100, objective='binary:logistic')
+    clf.fit(trainFeatures,trainLabels)
     
     # Use predict_proba() rather than predict() to use probabilities rather
     # than estimated class labels as outputs
-    testOutputs = model.predict_proba(testFeatures)[:,1]    
+    testOutputs = clf.predict_proba(testFeatures)[:,1]    
     return testOutputs
 
 
@@ -59,7 +61,7 @@ if __name__ == "__main__":
     clf.fit(trainFeatures, trainLabels)
 
     # Test on testing set
-    testOutputs = predictTest(trainFeatures,trainLabels,testFeatures, model=clf)
+    testOutputs = predictTest(trainFeatures,trainLabels,testFeatures)
     print("Test set AUC: ", roc_auc_score(testLabels,testOutputs))
     
     # Examine outputs compared to labels (code from Kevin S. Xu)
