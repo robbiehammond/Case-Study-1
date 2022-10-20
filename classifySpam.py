@@ -17,8 +17,7 @@ import multiprocessing
 
 
 def aucCV(features,labels, model):
-    scores = cross_val_score(model,features,labels,cv=10,scoring='roc_auc')
-    
+    scores = cross_val_score(model,features,labels,cv=10,scoring='roc_auc')  
     return scores
 
 def predictTest(trainFeatures,trainLabels,testFeatures, model):
