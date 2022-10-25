@@ -6,6 +6,7 @@ Demo of 10-fold cross-validation using Gaussian naive Bayes on spam data
 Adapted to XGBoost by Prateek Dullur
 """
 
+
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.random import seed
@@ -31,26 +32,29 @@ def predictTest(trainFeatures,trainLabels,testFeatures, model):
     return testOutputs
 # Run this code only if being used as a script, not being imported
 if __name__ == "__main__":
-    data = np.loadtxt('spamTrain1.csv',delimiter=',')
+    trainData = np.loadtxt('spamTrain1.csv',delimiter=',')
     # Randomly shuffle rows of data set then separate labels (last column)
     np.random.seed(1)
-    shuffleIndex = np.arange(np.shape(data)[0])
+    shuffleIndex = np.arange(np.shape(trainData)[0])
     np.random.shuffle(shuffleIndex)
-    data = data[shuffleIndex,:]
-    features = data[:,:-1]
-    labels = data[:,-1]
+    trainData = trainData[shuffleIndex,:]
+    trainFeatures = trainData[:,:-1]
+    trainLabels = trainData[:,-1]
+
+    testData = np.loadtxt('spamTrain2.csv',delimiter=',')
+    np.random.seed(1)
+    shuffleIndex = np.arange(np.shape(testData)[0])
+    np.random.shuffle(shuffleIndex)
+    testData = trainData[shuffleIndex,:]
+    testFeatures = testData[:,:-1]
+    testLabels = testData[:,-1]
     
     
     # Arbitrarily choose all odd samples as train set and all even as test set
     # then compute test set AUC for model trained only on fixed train set
-    trainFeatures = features[0::2,:]
-    trainLabels = labels[0::2]
-    testFeatures = features[1::2,:]
-    testLabels = labels[1::2]
-
     xgb_model = xgb.XGBClassifier(objective='binary:logistic', n_jobs=multiprocessing.cpu_count() // 2)
     clf = GridSearchCV(xgb_model, {'max_depth': [2, 4, 6],
-                                   'n_estimators': [50, 100, 200], 'eta':[0.01, 0.1, 0.3, 1], 'max_bin':[256,512]}, verbose=1,
+                                   'n_estimators': [50, 100, 200], 'eta':[0.01, 0.1, 0.3, 1], 'max_bin':[128, 256, 512]}, verbose=1,
                        n_jobs=2)
     
     # Evaluating classifier accuracy using 10-fold cross-validation
@@ -58,6 +62,7 @@ if __name__ == "__main__":
     clf.fit(trainFeatures, trainLabels)
     testOutputs = predictTest(trainFeatures,trainLabels,testFeatures, model=clf)
     print("Test set AUC: ", roc_auc_score(testLabels,testOutputs))
+    print(clf.best_params_)
     
     # Examine outputs compared to labels
     sortIndex = np.argsort(testLabels)
