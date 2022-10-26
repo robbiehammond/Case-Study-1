@@ -21,7 +21,8 @@ def aucCV(features,labels, model):
     return scores
 
 def predictTest(trainFeatures,trainLabels,testFeatures):
-    clf = xgb.XGBClassifier(max_depth=4, eta=0.1, max_bin=256, n_estimators=100, objective='binary:logistic')
+    xgb_model = xgb.XGBClassifier(objective='binary:logistic', n_jobs=multiprocessing.cpu_count() // 2)
+    clf = xgb.XGBClassifier(max_depth=6, eta=0.1, max_bin=128, n_estimators=100, objective='binary:logistic')
     clf.fit(trainFeatures,trainLabels)
     
     # Use predict_proba() rather than predict() to use probabilities rather
@@ -31,25 +32,24 @@ def predictTest(trainFeatures,trainLabels,testFeatures):
 
 
 if __name__ == "__main__":
-    # Load data
-    data = np.loadtxt('spamTrain1.csv',delimiter=',')
-
+    trainData = np.loadtxt('spamTrain1.csv',delimiter=',')
     # Randomly shuffle rows of data set then separate labels (last column)
     np.random.seed(1)
-    shuffleIndex = np.arange(np.shape(data)[0])
+    shuffleIndex = np.arange(np.shape(trainData)[0])
     np.random.shuffle(shuffleIndex)
-    data = data[shuffleIndex,:]
-    features = data[:,:-1]
-    labels = data[:,-1]
+    trainData = trainData[shuffleIndex,:]
+    trainFeatures = trainData[:,:-1]
+    trainLabels = trainData[:,-1]
+
+    testData = np.loadtxt('spamTrain2.csv',delimiter=',')
+    # Randomly shuffle rows of data set then separate labels (last column)
+    np.random.seed(1)
+    shuffleIndex = np.arange(np.shape(testData)[0])
+    np.random.shuffle(shuffleIndex)
+    testData = trainData[shuffleIndex,:]
+    testFeatures = testData[:,:-1]
+    testLabels = testData[:,-1]
     
-    
-    # Arbitrarily choose all odd samples as train set and all even as test set
-    # then compute test set AUC for model trained only on fixed train set
-    # Code from Kevin S. Xu
-    trainFeatures = features[0::2,:]
-    trainLabels = labels[0::2]
-    testFeatures = features[1::2,:]
-    testLabels = labels[1::2]
 
     # Define xgb classifier
     xgb_model = xgb.XGBClassifier(objective='binary:logistic', n_jobs=multiprocessing.cpu_count() // 2)
