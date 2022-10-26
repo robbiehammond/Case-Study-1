@@ -21,7 +21,6 @@ def aucCV(features,labels, model):
     return scores
 
 def predictTest(trainFeatures,trainLabels,testFeatures):
-    xgb_model = xgb.XGBClassifier(objective='binary:logistic', n_jobs=multiprocessing.cpu_count() // 2)
     clf = xgb.XGBClassifier(max_depth=4, eta=0.1, max_bin=256, n_estimators=100, objective='binary:logistic')
     clf.fit(trainFeatures,trainLabels)
     
@@ -56,7 +55,7 @@ if __name__ == "__main__":
     xgb_model = xgb.XGBClassifier(objective='binary:logistic', n_jobs=multiprocessing.cpu_count() // 2)
     clf = xgb.XGBClassifier(max_depth=4, eta=0.1, max_bin=256, n_estimators=100, objective='binary:logistic')
     print("10-fold cross-validation mean AUC: ", np.mean(aucCV(trainFeatures,trainLabels, model=clf)))
-    
+
     # Fit classifier to training data
     clf.fit(trainFeatures, trainLabels)
 
