@@ -15581,7 +15581,21 @@ jp-needs-light-background
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Practical-Application">Practical Application<a class="anchor-link" href="#Practical-Application">&#182;</a></h1><p><font color=red>From assignment: &quot;Recommendations on how to evaluate the effectiveness of your algorithm if it were to be deployed as a personalized spam filter for a user. What might be a good choice of metric, and what are the implications on the classifier? How might you solicit feedback from users to evaluate and improve your spam filter? (10 points)&quot;</font></p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h1 id="Real-World-Evaluation">Real-World Evaluation<a class="anchor-link" href="#Real-World-Evaluation">&#182;</a></h1><p><font color=red>From assignment: &quot;Recommendations on how to evaluate the effectiveness of your algorithm if it were to be deployed as a personalized spam filter for a user. What might be a good choice of metric, and what are the implications on the classifier? How might you solicit feedback from users to evaluate and improve your spam filter? (10 points)&quot;</font></p>
+<p>Properties of an optimal spam filter in the real world would be one that recognizes the all spam emails as spam, but never sends non-spam emails to the spam folder. In other words, the filter should have an extremely high true positive rate and an extremely low false positive rate. However, it is arguably more important that a spam filter prioritize a low false positive rate over having a high true positive rate, as sending a non-spam email to the spam folder could result in someone missing critical information, while a spam email not being filtered typically just results in a minor annoyance. To evaluate the effectiveness of a spam filter, one should consider both the true positive and false positive rates, but with more focus put on the false positive rate.</p>
+<p>Exactly how important it is for the spam filter to avoid classifying non-spam as spam depends on the individual user, so to create the best spam filter possible, it would be important to include an &quot;agressiveness&quot; setting, which can be set by the user. This setting would affect the false positive rate of the filter, and could be implemented by using multiple models for different filters. The most agressive filter would likely have a higher false positive rate (as it would air on the side of sending things to spam) while the least agressive setting would likely have a lower false positive rate (as it would air on the side of not sending things to spam).</p>
+<p>[Talk about soliciting feedback and improving it here]</p>
 
 </div>
 </div>
