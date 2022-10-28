@@ -6,6 +6,7 @@ Use XGBoost Gradient Boosted Ensemble model to classify spam emails
 Used some code from Kevin S. Xu and public libraries: sklearn, numpy, xgboost
 Requires pip installation of xgboost to run
 
+Only used in Report.ipynb (to run multiple classifiers)
 """
 
 import numpy as np
