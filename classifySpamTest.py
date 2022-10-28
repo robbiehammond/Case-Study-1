@@ -9,12 +9,8 @@ Requires pip installation of xgboost to run
 """
 
 import numpy as np
-import matplotlib.pyplot as plt
-import xgboost as xgb   #Chen, T., & Guestrin, C. (2016). XGBoost: A Scalable Tree Boosting System. In Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (pp. 785–794). New York, NY, USA: ACM. https://doi.org/10.1145/2939672.2939785
-from sklearn.model_selection import cross_val_score, StratifiedKFold
-from sklearn.feature_selection import RFECV
-from sklearn.metrics import roc_auc_score
-import multiprocessing
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import roc_curve
 
 
 def aucCV(features,labels, model):
@@ -29,4 +25,15 @@ def predictTest(trainFeatures,trainLabels,testFeatures, model):
     testOutputs = model.predict_proba(testFeatures)[:,1]    
     return testOutputs
 
-  
+def tprAtFPR(labels,outputs,desiredFPR):
+    fpr,tpr,thres = roc_curve(labels,outputs)
+    # True positive rate for highest false positive rate < 0.01
+    maxFprIndex = np.where(fpr<=desiredFPR)[0][-1]
+    fprBelow = fpr[maxFprIndex]
+    fprAbove = fpr[maxFprIndex+1]
+    # Find TPR at exactly desired FPR by linear interpolation
+    tprBelow = tpr[maxFprIndex]
+    tprAbove = tpr[maxFprIndex+1]
+    tprAt = ((tprAbove-tprBelow)/(fprAbove-fprBelow)*(desiredFPR-fprBelow) 
+             + tprBelow)
+    return tprAt,fpr,tpr

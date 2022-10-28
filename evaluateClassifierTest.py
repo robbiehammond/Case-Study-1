@@ -8,6 +8,7 @@ Script used to evaluate classifier accuracy
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_auc_score,roc_curve
+from sklearn.model_selection import train_test_split
 from classifySpam import predictTest
 
 desiredFPR = 0.01
@@ -31,21 +32,24 @@ def tprAtFPR(labels,outputs,desiredFPR):
 train1Data = np.loadtxt(train1DataFilename,delimiter=',')
 train2Data = np.loadtxt(train2DataFilename,delimiter=',')
 trainData = np.r_[train1Data,train2Data]
-testData = np.loadtxt(testDataFilename,delimiter=',')
+#testData = np.loadtxt(testDataFilename,delimiter=',')
 
 # Randomly shuffle rows of training and test sets then separate labels
 # (last column)
 shuffleIndex = np.arange(np.shape(trainData)[0])
+np.random.seed(1)
 np.random.shuffle(shuffleIndex)
 trainData = trainData[shuffleIndex,:]
 trainFeatures = trainData[:,:-1]
 trainLabels = trainData[:,-1]
 
-shuffleIndex = np.arange(np.shape(testData)[0])
-np.random.shuffle(shuffleIndex)
-testData = testData[shuffleIndex,:]
-testFeatures = testData[:,:-1]
-testLabels = testData[:,-1]
+trainFeatures, testFeatures, trainLabels, testLabels = train_test_split(trainFeatures, trainLabels, test_size=0.4, random_state=1, shuffle=True)
+
+#shuffleIndex = np.arange(np.shape(testData)[0])
+# np.random.shuffle(shuffleIndex)
+# testData = testData[shuffleIndex,:]
+# testFeatures = testData[:,:-1]
+# testLabels = testData[:,-1]
 
 testOutputs = predictTest(trainFeatures,trainLabels,testFeatures)
 aucTestRun = roc_auc_score(testLabels,testOutputs)

@@ -34,12 +34,14 @@ testData = np.loadtxt(testDataFilename,delimiter=',')
 # Randomly shuffle rows of training and test sets then separate labels
 # (last column)
 shuffleIndex = np.arange(np.shape(trainData)[0])
+np.random.seed(1)
 np.random.shuffle(shuffleIndex)
 trainData = trainData[shuffleIndex,:]
 trainFeatures = trainData[:,:-1]
 trainLabels = trainData[:,-1]
 
 shuffleIndex = np.arange(np.shape(testData)[0])
+np.random.seed(1)
 np.random.shuffle(shuffleIndex)
 testData = testData[shuffleIndex,:]
 testFeatures = testData[:,:-1]
